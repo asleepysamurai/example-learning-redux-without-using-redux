@@ -9,55 +9,64 @@ import './AppContainer.scss';
 import Sidebar from '../Sidebar';
 import Content from '../Content';
 import { generateID } from '../../utils';
+import { transitionState, getState } from '../../state/store';
 
 class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            todoList: [],
-            visibilityFilter: 'all'
-        };
+        this.state = getState();
     }
 
     addTodo = () => {
-        this.setState({
+        const newState = transitionState({
             expandedTodo: {
                 id: generateID()
             },
             expandedTodoEditable: true
         });
+
+        this.setState(newState);
     }
 
     saveTodo = () => {
-        const todo = this.state.expandedTodo;
+        const state = getState();
+        const todo = state.expandedTodo;
 
-        let todoIndex = this.state.todoList.findIndex(todoItem => todoItem.id === todo.id);
-        todoIndex = todoIndex === -1 ? this.state.todoList.length : todoIndex;
+        let todoIndex = state.todoList.findIndex(todoItem => todoItem.id === todo.id);
+        todoIndex = todoIndex === -1 ? state.todoList.length : todoIndex;
 
-        const todoList = [...this.state.todoList.slice(0, todoIndex), todo, ...this.state.todoList.slice(todoIndex + 1)];
-        this.setState({
+        const todoList = [...state.todoList.slice(0, todoIndex), todo, ...state.todoList.slice(todoIndex + 1)];
+        const newState = transitionState({
             todoList,
             expandedTodo: todo,
             expandedTodoEditable: false
         });
+
+        this.setState(newState);
     }
 
     openTodo = (todo) => {
-        this.setState({ expandedTodo: todo, expandedTodoEditable: false });
+        const newState = transitionState({ expandedTodo: todo, expandedTodoEditable: false })
+        this.setState(newState);
     }
 
     setVisibilityFilter = (visibilityFilter) => {
-        this.setState({ visibilityFilter });
+        const newState = transitionState({ visibilityFilter });
+        this.setState(newState);
     }
 
     onTodoChange = (todoDiff) => {
-        const expandedTodo = Object.assign({}, this.state.expandedTodo, todoDiff);
-        this.setState({ expandedTodo });
+        const state = getState();
+        const expandedTodo = Object.assign({}, state.expandedTodo, todoDiff);
+        const newState = transitionState({ expandedTodo })
+        this.setState(newState);
     }
 
     toggleEditable = () => {
-        this.setState({ expandedTodoEditable: !this.state.expandedTodoEditable });
+        const state = getState();
+        const newState = transitionState({ expandedTodoEditable: !state.expandedTodoEditable });
+        this.setState(newState);
     }
 
     renderExpandedTodo() {

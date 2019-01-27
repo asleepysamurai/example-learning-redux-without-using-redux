@@ -1,0 +1,20 @@
+div.sidebar {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+
+    &>* {
+        flex-shrink: 0;
+        flex-grow: 0;
+        padding: 5px 10px;
+    }
+
+    &>div.todo-list {
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+
+    &>div.header {
+        display: flex;
+    }
+}

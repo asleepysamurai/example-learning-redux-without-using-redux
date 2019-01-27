@@ -1,0 +1,17 @@
+div.app-container,
+div.root,
+body {
+    padding: 0;
+    margin: 0;
+}
+
+div.app-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+
+    &>* {
+        flex-shrink: 0;
+        flex-grow: 0;
+    }
+}

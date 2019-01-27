@@ -15,25 +15,11 @@ const headerPrefixByVisibilityFilter = {
 };
 
 class Sidebar extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            visibilityFilter: 'all'
-        };
-    }
-
-    setVisibilityFilter(filter) {
-        return (ev) => {
-            this.setState({ visibilityFilter: filter });
-        };
-    }
-
     renderHeader() {
         const component = (
             <div
                 className="header">
-                <span>{headerPrefixByVisibilityFilter[this.state.visibilityFilter]} Todos </span>
+                <span>{headerPrefixByVisibilityFilter[this.props.visibilityFilter]} Todos </span>
                 <button
                     onClick={this.props.addTodo}>
                     Add Todo
@@ -50,19 +36,19 @@ class Sidebar extends Component {
                 className="footer">
                 <span>Show todos: </span>
                 <button
-                    onClick={this.setVisibilityFilter('all')} >
+                    onClick={this.props.setVisibilityFilter.bind(null, 'all')} >
                     All
                 </button>
                 <button
-                    onClick={this.setVisibilityFilter('none')} >
+                    onClick={this.props.setVisibilityFilter.bind(null, 'none')} >
                     Not Started
                 </button>
                 <button
-                    onClick={this.setVisibilityFilter('partial')} >
+                    onClick={this.props.setVisibilityFilter.bind(null, 'partial')} >
                     Partly Done
                 </button>
                 <button
-                    onClick={this.setVisibilityFilter('done')} >
+                    onClick={this.props.setVisibilityFilter.bind(null, 'done')} >
                     Completed
                 </button>
             </div>
@@ -74,13 +60,13 @@ class Sidebar extends Component {
     renderTodoList() {
         let todoListItems;
 
-        if (this.state.visibilityFilter === 'all')
+        if (this.props.visibilityFilter === 'all')
             todoListItems = this.props.todoList;
-        else if (this.state.visibilityFilter === 'none')
+        else if (this.props.visibilityFilter === 'none')
             todoListItems = this.props.notStartedTodoList;
-        else if (this.state.visibilityFilter === 'partial')
+        else if (this.props.visibilityFilter === 'partial')
             todoListItems = this.props.partlyCompletedTodoList;
-        else if (this.state.visibilityFilter === 'done')
+        else if (this.props.visibilityFilter === 'done')
             todoListItems = this.props.completedTodoList;
 
         const component = (

@@ -7,31 +7,15 @@ import React, { Component } from 'react';
 import TodoItem from '../_shared/TodoItem';
 
 class Content extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            todo: this.props.todo
-        };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({ todo: nextProps.todo });
-    }
-
-    saveTodo = (todo) => {
-        this.props.saveTodo(todo);
-    }
-
     onTodoChange(fieldName) {
         return (ev) => {
             const { value } = ev.currentTarget;
 
-            const todo = Object.assign({}, this.state.todo, {
+            const todo = Object.assign({}, this.props.todo, {
                 [fieldName]: value
             });
 
-            this.setState({ todo });
+            this.props.onTodoChange({ todo });
         };
     }
 
@@ -40,10 +24,11 @@ class Content extends Component {
             <div
                 className="content-container">
                 <TodoItem
-                    onSave={this.saveTodo}
-                    {...this.state.todo}
+                    onSave={this.props.saveTodo}
+                    {...this.props.todo}
                     showTasks={true}
-                    editable={this.props.editable} />
+                    editable={this.props.editable}
+                    onChange={this.props.onTodoChange} />
             </div>
         );
 

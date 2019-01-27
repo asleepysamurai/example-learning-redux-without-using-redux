@@ -8,93 +8,67 @@ import CheckableItem from '../CheckableItem';
 import { generateID } from '../../../utils';
 
 class TodoItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = this.getStateFromProps(props);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState(this.getStateFromProps(nextProps));
-    }
-
-    getStateFromProps(props) {
-        const { description, tasks = [], done, id, readOnly, editable } = props;
+    static get defaultProps() {
         return {
-            description,
-            tasks,
-            done,
-            id,
-            readOnly,
-            editable
+            tasks: []
         };
     }
 
-    onTaskChange(taskId) {
-        return (fieldName, value) => {
-            fieldName = fieldName === 'checked' ? 'done' : fieldName;
+    onTaskChange = (taskId, fieldName, value) => {
+        debugger;
+        fieldName = fieldName === 'checked' ? 'done' : fieldName;
 
-            let taskIndex = this.state.tasks.findIndex(taskItem => taskItem.id === taskId);
-            taskIndex = taskIndex === -1 ? this.state.tasks.length : taskIndex;
+        let taskIndex = this.props.tasks.findIndex(taskItem => taskItem.id === taskId);
+        taskIndex = taskIndex === -1 ? this.props.tasks.length : taskIndex;
 
-            let task = Object.assign({}, (this.state.tasks[taskIndex] || {}), { id: taskId, [fieldName]: value });
+        let task = Object.assign({}, (this.props.tasks[taskIndex] || {}), { id: taskId, [fieldName]: value });
 
-            const tasks = [...this.state.tasks.slice(0, taskIndex), task, ...this.state.tasks.slice(taskIndex + 1)];
-
-            const completedTasks = tasks.filter(task => task.done);
-            const done = (completedTasks.length === tasks.length);
-
-            this.setState({
-                tasks,
-                done
-            });
-        }
-    }
-
-    onTodoSave = () => {
-        const { description, id, tasks } = this.state;
+        const tasks = [...this.props.tasks.slice(0, taskIndex), task, ...this.props.tasks.slice(taskIndex + 1)];
 
         const completedTasks = tasks.filter(task => task.done);
-        const done = completedTasks.length === tasks.length;
+        const done = (completedTasks.length === tasks.length);
 
-        this.props.onSave({ description, id, done, tasks });
+        this.props.onChange({
+            tasks,
+            done
+        });
     }
 
     onTodoChange = (fieldName, value) => {
         fieldName = fieldName === 'checked' ? 'done' : fieldName;
-        const tasks = this.state.tasks.map(taskItem => {
-            return Object.assign({}, taskItem, { done: value });
-        });
 
-        this.setState({
+        let tasks = this.props.tasks;
+
+        if (fieldName === 'done') {
+            tasks = this.props.tasks.map(taskItem => {
+                return Object.assign({}, taskItem, { done: value });
+            });
+        }
+
+        this.props.onChange({
             [fieldName]: value,
             tasks
         });
     }
 
-    toggleEditable = () => {
-        this.setState({ editable: !this.state.editable });
-    }
-
     renderTaskItems() {
-        debugger;
         if (!this.props.showTasks)
             return;
 
-        const tasks = this.state.editable ? this.state.tasks.concat([{
+        const tasks = this.props.editable ? this.props.tasks.concat([{
             id: generateID()
-        }]) : this.state.tasks;
+        }]) : this.props.tasks;
 
         const taskItems = tasks.map(taskItem => {
             return (
                 <CheckableItem
                     key={taskItem.id}
-                    onChange={this.onTaskChange(taskItem.id)}
+                    onChange={this.onTaskChange.bind(null, taskItem.id)}
                     className="task-item"
                     checked={taskItem.done}
-                    checkable={!this.state.editable}
+                    checkable={!this.props.editable}
                     description={taskItem.description}
-                    readOnly={taskItem.readOnly || !this.state.editable} />
+                    readOnly={taskItem.readOnly || !this.props.editable} />
             );
         });
 
@@ -111,25 +85,25 @@ class TodoItem extends Component {
     }
 
     renderSaveButton() {
-        if (this.state.readOnly)
+        if (this.props.readOnly)
             return;
 
         return (
             <button
-                onClick={this.onTodoSave}>
+                onClick={this.props.onSave}>
                 Save
             </button>
         );
     }
 
     renderEditButton() {
-        if (this.state.readOnly)
+        if (this.props.readOnly)
             return;
 
         return (
             <button
-                onClick={this.toggleEditable}>
-                {this.state.editable ? 'Reset' : 'Edit'}
+                onClick={this.props.toggleEditable}>
+                {this.props.editable ? 'Reset' : 'Edit'}
             </button>
         );
     }
@@ -146,10 +120,10 @@ class TodoItem extends Component {
                     className="header"
                     onChange={this.onTodoChange}
                     onClick={this.props.onClick}
-                    checked={this.state.done}
-                    checkable={!this.state.readOnly}
-                    description={this.state.description}
-                    readOnly={this.state.readOnly || !this.state.editable} />
+                    checked={this.props.done}
+                    checkable={!this.props.readOnly}
+                    description={this.props.description}
+                    readOnly={this.props.readOnly || !this.props.editable} />
                 {taskItems}
                 {editButton}
                 {saveButton}

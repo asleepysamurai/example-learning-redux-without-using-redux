@@ -15,7 +15,8 @@ class App extends Component {
         super(props);
 
         this.state = {
-            todoList: []
+            todoList: [],
+            visibilityFilter: 'all'
         };
     }
 
@@ -28,7 +29,9 @@ class App extends Component {
         });
     }
 
-    saveTodo = (todo) => {
+    saveTodo = () => {
+        const todo = this.state.expandedTodo;
+
         let todoIndex = this.state.todoList.findIndex(todoItem => todoItem.id === todo.id);
         todoIndex = todoIndex === -1 ? this.state.todoList.length : todoIndex;
 
@@ -44,6 +47,15 @@ class App extends Component {
         this.setState({ expandedTodo: todo, expandedTodoEditable: false });
     }
 
+    setVisibilityFilter = (visibilityFilter) => {
+        this.setState({ visibilityFilter });
+    }
+
+    onTodoChange = (todoDiff) => {
+        const expandedTodo = Object.assign({}, this.state.expandedTodo, todoDiff);
+        this.setState({ expandedTodo });
+    }
+
     renderExpandedTodo() {
         if (!this.state.expandedTodo)
             return null;
@@ -52,7 +64,8 @@ class App extends Component {
             <Content
                 todo={this.state.expandedTodo}
                 editable={this.state.expandedTodoEditable}
-                saveTodo={this.saveTodo} />
+                saveTodo={this.saveTodo}
+                onTodoChange={this.onTodoChange} />
         );
     }
 
@@ -65,7 +78,9 @@ class App extends Component {
                 <Sidebar
                     todoList={this.state.todoList}
                     openTodo={this.openTodo}
-                    addTodo={this.addTodo} />
+                    addTodo={this.addTodo}
+                    setVisibilityFilter={this.setVisibilityFilter}
+                    visibilityFilter={this.state.visibilityFilter} />
                 {expandedTodo}
             </div>
         );

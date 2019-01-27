@@ -7,17 +7,6 @@ import React, { Component } from 'react';
 import Sidebar from './Sidebar';
 
 class SidebarContainer extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            todoList: [],
-            completedTodoList: [],
-            partlyCompletedTodoList: [],
-            notStartedTodoList: []
-        };
-    }
-
     categorizeTodoList() {
         let { todoList = [] } = this.props;
 
@@ -62,7 +51,9 @@ class SidebarContainer extends Component {
                 todoList={todoList}
                 completedTodoList={completedTodoList}
                 partlyCompletedTodoList={partlyCompletedTodoList}
-                notStartedTodoList={notStartedTodoList} />
+                notStartedTodoList={notStartedTodoList}
+                setVisibilityFilter={this.props.setVisibilityFilter}
+                visibilityFilter={this.props.visibilityFilter} />
         );
 
         return component;

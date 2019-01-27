@@ -23,23 +23,19 @@ class App extends Component {
     }
 
     addTodo = () => {
-        const newState = transitionState('addTodo', { id: generateID() });
-        this.setState(newState);
+        transitionState('addTodo', { id: generateID() });
     }
 
     saveTodo = () => {
-        const newState = transitionState('saveExpandedTodo');
-        this.setState(newState);
+        transitionState('saveExpandedTodo');
     }
 
     setVisibilityFilter = (visibilityFilter) => {
-        const newState = transitionState('setVisibilityFilter', { visibilityFilter });
-        this.setState(newState);
+        transitionState('setVisibilityFilter', { visibilityFilter });
     }
 
     toggleEditable = () => {
-        const newState = transitionState('toggleEditable');
-        this.setState(newState);
+        transitionState('toggleEditable');
     }
 
     renderExpandedTodo() {

@@ -40,8 +40,13 @@ class TodoItem extends Component {
             let task = Object.assign({}, (this.state.tasks[taskIndex] || {}), { id: taskId, [fieldName]: value });
 
             const tasks = [...this.state.tasks.slice(0, taskIndex), task, ...this.state.tasks.slice(taskIndex + 1)];
+
+            const completedTasks = tasks.filter(task => task.done);
+            const done = (completedTasks.length === tasks.length);
+
             this.setState({
-                tasks
+                tasks,
+                done
             });
         }
     }
@@ -50,16 +55,20 @@ class TodoItem extends Component {
         const { description, id, tasks } = this.state;
 
         const completedTasks = tasks.filter(task => task.done);
-        const done = completedTasks.length == tasks.length;
+        const done = completedTasks.length === tasks.length;
 
         this.props.onSave({ description, id, done, tasks });
     }
 
     onTodoChange = (fieldName, value) => {
         fieldName = fieldName === 'checked' ? 'done' : fieldName;
+        const tasks = this.state.tasks.map(taskItem => {
+            return Object.assign({}, taskItem, { done: value });
+        });
 
         this.setState({
-            [fieldName]: value
+            [fieldName]: value,
+            tasks
         });
     }
 
@@ -83,7 +92,7 @@ class TodoItem extends Component {
                     onChange={this.onTaskChange(taskItem.id)}
                     className="task-item"
                     checked={taskItem.done}
-                    checkable={!this.state.readOnly && !this.state.editable}
+                    checkable={!this.state.editable}
                     description={taskItem.description}
                     readOnly={taskItem.readOnly || !this.state.editable} />
             );
@@ -138,7 +147,7 @@ class TodoItem extends Component {
                     onChange={this.onTodoChange}
                     onClick={this.props.onClick}
                     checked={this.state.done}
-                    checkable={false}
+                    checkable={!this.state.readOnly}
                     description={this.state.description}
                     readOnly={this.state.readOnly || !this.state.editable} />
                 {taskItems}

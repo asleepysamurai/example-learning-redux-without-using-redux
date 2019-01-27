@@ -30,7 +30,8 @@ class TodoList extends Component {
                     key={todoItem.id}
                     {...todoItem}
                     onClick={this.openTodo(todoItem)}
-                    readOnly={this.props.readOnly}
+                    readOnly={true}
+                    editable={this.props.editable}
                 />
             );
         });

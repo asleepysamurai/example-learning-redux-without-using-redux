@@ -85,7 +85,6 @@ class Sidebar extends Component {
 
         const component = (
             <TodoList
-                readOnly={true}
                 openTodo={this.props.openTodo}
                 todoList={todoListItems} />
         );

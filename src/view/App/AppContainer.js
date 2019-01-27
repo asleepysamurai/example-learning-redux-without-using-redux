@@ -56,6 +56,10 @@ class App extends Component {
         this.setState({ expandedTodo });
     }
 
+    toggleEditable = () => {
+        this.setState({ expandedTodoEditable: !this.state.expandedTodoEditable });
+    }
+
     renderExpandedTodo() {
         if (!this.state.expandedTodo)
             return null;
@@ -65,7 +69,8 @@ class App extends Component {
                 todo={this.state.expandedTodo}
                 editable={this.state.expandedTodoEditable}
                 saveTodo={this.saveTodo}
-                onTodoChange={this.onTodoChange} />
+                onTodoChange={this.onTodoChange}
+                toggleEditable={this.toggleEditable} />
         );
     }
 

@@ -16,7 +16,6 @@ class Content extends Component {
                     {...this.props.todo}
                     showTasks={true}
                     editable={this.props.editable}
-                    onChange={this.props.onTodoChange}
                     toggleEditable={this.props.toggleEditable} />
             </div>
         );

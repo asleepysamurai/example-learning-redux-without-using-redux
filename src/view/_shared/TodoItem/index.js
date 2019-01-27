@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 
 import CheckableItem from '../CheckableItem';
 import { generateID } from '../../../utils';
+import { transitionState } from '../../../state/store';
 
 class TodoItem extends Component {
     static get defaultProps() {
@@ -15,40 +16,11 @@ class TodoItem extends Component {
     }
 
     onTaskChange = (taskId, fieldName, value) => {
-        debugger;
-        fieldName = fieldName === 'checked' ? 'done' : fieldName;
-
-        let taskIndex = this.props.tasks.findIndex(taskItem => taskItem.id === taskId);
-        taskIndex = taskIndex === -1 ? this.props.tasks.length : taskIndex;
-
-        let task = Object.assign({}, (this.props.tasks[taskIndex] || {}), { id: taskId, [fieldName]: value });
-
-        const tasks = [...this.props.tasks.slice(0, taskIndex), task, ...this.props.tasks.slice(taskIndex + 1)];
-
-        const completedTasks = tasks.filter(task => task.done);
-        const done = (completedTasks.length === tasks.length);
-
-        this.props.onChange({
-            tasks,
-            done
-        });
+        transitionState('taskChange', { taskId, fieldName, value });
     }
 
     onTodoChange = (fieldName, value) => {
-        fieldName = fieldName === 'checked' ? 'done' : fieldName;
-
-        let tasks = this.props.tasks;
-
-        if (fieldName === 'done') {
-            tasks = this.props.tasks.map(taskItem => {
-                return Object.assign({}, taskItem, { done: value });
-            });
-        }
-
-        this.props.onChange({
-            [fieldName]: value,
-            tasks
-        });
+        transitionState('todoChange', { fieldName, value });
     }
 
     renderTaskItems() {

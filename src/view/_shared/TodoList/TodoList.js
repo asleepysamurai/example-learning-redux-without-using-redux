@@ -5,12 +5,11 @@
 import React, { Component } from 'react';
 
 import TodoItem from '../TodoItem';
+import { transitionState } from '../../../state/store';
 
 class TodoList extends Component {
-    openTodo(todo) {
-        return () => {
-            this.props.openTodo(todo);
-        };
+    openTodo = (todo) => {
+        transitionState('setExpandedTodo', { todo });
     }
 
     renderTodoListChildren() {
@@ -29,7 +28,7 @@ class TodoList extends Component {
                 <TodoItem
                     key={todoItem.id}
                     {...todoItem}
-                    onClick={this.openTodo(todoItem)}
+                    onClick={this.openTodo.bind(null, todoItem)}
                     readOnly={true}
                     editable={this.props.editable}
                 />

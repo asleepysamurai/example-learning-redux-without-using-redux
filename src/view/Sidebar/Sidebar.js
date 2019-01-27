@@ -71,7 +71,6 @@ class Sidebar extends Component {
 
         const component = (
             <TodoList
-                openTodo={this.props.openTodo}
                 todoList={todoListItems} />
         );
 

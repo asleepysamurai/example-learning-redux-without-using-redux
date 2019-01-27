@@ -47,7 +47,6 @@ class SidebarContainer extends Component {
         const component = (
             <Sidebar
                 addTodo={this.props.addTodo}
-                openTodo={this.props.openTodo}
                 todoList={todoList}
                 completedTodoList={completedTodoList}
                 partlyCompletedTodoList={partlyCompletedTodoList}

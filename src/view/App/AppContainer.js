@@ -56,10 +56,7 @@ class App extends Component {
 
         return (
             <Content
-                todo={this.state.expandedTodo}
-                editable={this.state.expandedTodoEditable}
-                saveTodo={this.saveTodo}
-                toggleEditable={this.toggleEditable} />
+                todo={this.state.expandedTodo} />
         );
     }
 
@@ -70,10 +67,7 @@ class App extends Component {
             <div
                 className="app-container">
                 <Sidebar
-                    todoList={this.state.todoList}
-                    addTodo={this.addTodo}
-                    setVisibilityFilter={this.setVisibilityFilter}
-                    visibilityFilter={this.state.visibilityFilter} />
+                    todoList={this.state.todoList} />
                 {expandedTodo}
             </div>
         );

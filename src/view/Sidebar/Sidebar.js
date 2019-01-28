@@ -20,7 +20,7 @@ class Sidebar extends Component {
         const component = (
             <div
                 className="header">
-                <span>{headerPrefixByVisibilityFilter[this.props.visibilityFilter]} Todos </span>
+                <span>{headerPrefixByVisibilityFilter[getContextItem('visibilityFilter')]} Todos </span>
                 <button
                     onClick={getContextItem('addTodo')}>
                     Add Todo

@@ -9,15 +9,17 @@ import './AppContainer.scss';
 import Sidebar from '../Sidebar';
 import Content from '../Content';
 import { generateID } from '../../utils';
-import { transitionState, getState, onStateTransition, setContextItem } from '../../state/store';
+import { store, setContextItem } from '../../state/store';
 
 class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = getState();
+        this.state = store.getState();
 
-        onStateTransition((newState) => {
+        store.subscribe(() => {
+            const newState = store.getState();
+
             this.updateStateContextItems(newState);
             this.setState(newState);
         });
@@ -35,19 +37,19 @@ class App extends Component {
     }
 
     addTodo = () => {
-        transitionState('addTodo', { id: generateID() });
+        store.dispatch({ type: 'addTodo', id: generateID() });
     }
 
     saveTodo = () => {
-        transitionState('saveExpandedTodo');
+        store.dispatch({ type: 'saveExpandedTodo', expandedTodo: this.state.expandedTodo });
     }
 
     setVisibilityFilter = (visibilityFilter) => {
-        transitionState('setVisibilityFilter', { visibilityFilter });
+        store.dispatch({ type: 'setVisibilityFilter', visibilityFilter });
     }
 
     toggleEditable = () => {
-        transitionState('toggleEditable');
+        store.dispatch({ type: 'toggleEditable' });
     }
 
     renderExpandedTodo() {

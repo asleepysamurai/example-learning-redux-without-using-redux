@@ -5,11 +5,11 @@
 import React, { Component } from 'react';
 
 import TodoItem from '../TodoItem';
-import { transitionState } from '../../../state/store';
+import { store } from '../../../state/store';
 
 class TodoList extends Component {
     openTodo = (todo) => {
-        transitionState('setExpandedTodo', { todo });
+        store.dispatch({ type: 'setExpandedTodo', todo });
     }
 
     renderTodoListChildren() {

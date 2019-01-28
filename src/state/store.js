@@ -2,112 +2,117 @@
  * Global State Store
  */
 
-let state = {
-    todoList: [],
-    visibilityFilter: 'all',
-    expandedTodo: null,
-    expandedTodoEditable: false
-};
+import { createStore, combineReducers } from 'redux';
 
 let context = {};
 
-let transitionCompleteHandler;
+function todoList(state = [], action) {
+    if (action.type !== 'saveExpandedTodo')
+        return state;
 
-function getState() {
-    return state;
+    const { expandedTodo } = action;
+
+    let todoIndex = state.findIndex(todoItem => todoItem.id === expandedTodo.id);
+    todoIndex = todoIndex === -1 ? state.length : todoIndex;
+
+    const todoList = [...state.slice(0, todoIndex), expandedTodo, ...state.slice(todoIndex + 1)];
+    return todoList;
 };
 
-const transforms = {
-    taskChange: ({ taskId, fieldName, value }) => {
-        fieldName = fieldName === 'checked' ? 'done' : fieldName;
+function visibilityFilter(state = 'all', action) {
+    if (action.type !== 'setVisibilityFilter')
+        return state;
 
-        const expandedTodoTasks = state.expandedTodo.tasks || [];
+    return action.visibilityFilter || 'all';
+};
 
-        let taskIndex = expandedTodoTasks.findIndex(taskItem => taskItem.id === taskId);
-        taskIndex = taskIndex === -1 ? expandedTodoTasks.length : taskIndex;
+function taskChange(expandedTodo, { taskId, fieldName, value }) {
+    fieldName = fieldName === 'checked' ? 'done' : fieldName;
 
-        let task = Object.assign({}, (expandedTodoTasks[taskIndex] || {}), { id: taskId, [fieldName]: value });
+    const expandedTodoTasks = expandedTodo.tasks || [];
 
-        const tasks = [...expandedTodoTasks.slice(0, taskIndex), task, ...expandedTodoTasks.slice(taskIndex + 1)];
+    let taskIndex = expandedTodoTasks.findIndex(taskItem => taskItem.id === taskId);
+    taskIndex = taskIndex === -1 ? expandedTodoTasks.length : taskIndex;
 
-        const completedTasks = tasks.filter(task => task.done);
-        const done = (completedTasks.length === tasks.length);
+    let task = Object.assign({}, (expandedTodoTasks[taskIndex] || {}), { id: taskId, [fieldName]: value });
 
-        const expandedTodo = Object.assign({}, state.expandedTodo, {
-            tasks,
-            done
+    const tasks = [...expandedTodoTasks.slice(0, taskIndex), task, ...expandedTodoTasks.slice(taskIndex + 1)];
+
+    const completedTasks = tasks.filter(task => task.done);
+    const done = (completedTasks.length === tasks.length);
+
+    return Object.assign({}, expandedTodo, {
+        tasks,
+        done
+    });
+};
+
+function todoChange(expandedTodo, { fieldName, value }) {
+    fieldName = fieldName === 'checked' ? 'done' : fieldName;
+
+    let tasks = expandedTodo.tasks;
+
+    if (fieldName === 'done') {
+        tasks = tasks.map(taskItem => {
+            return Object.assign({}, taskItem, { done: value });
         });
-
-        return { expandedTodo };
-    },
-
-    todoChange: ({ fieldName, value }) => {
-        fieldName = fieldName === 'checked' ? 'done' : fieldName;
-
-        let tasks = state.expandedTodo.tasks;
-
-        if (fieldName === 'done') {
-            tasks = tasks.map(taskItem => {
-                return Object.assign({}, taskItem, { done: value });
-            });
-        }
-
-        const expandedTodo = Object.assign({}, state.expandedTodo, {
-            [fieldName]: value,
-            tasks
-        });
-
-        return { expandedTodo };
-    },
-
-    setExpandedTodo: ({ todo }) => {
-        return { expandedTodo: todo, expandedTodoEditable: false };
-    },
-
-    addTodo: ({ id }) => {
-        return {
-            expandedTodo: { id },
-            expandedTodoEditable: true
-        };
-    },
-
-    saveExpandedTodo: () => {
-        const todo = state.expandedTodo;
-
-        let todoIndex = state.todoList.findIndex(todoItem => todoItem.id === todo.id);
-        todoIndex = todoIndex === -1 ? state.todoList.length : todoIndex;
-
-        const todoList = [...state.todoList.slice(0, todoIndex), todo, ...state.todoList.slice(todoIndex + 1)];
-        return {
-            todoList,
-            expandedTodo: todo,
-            expandedTodoEditable: false
-        };
-    },
-
-    setVisibilityFilter: ({ visibilityFilter }) => {
-        return { visibilityFilter };
-    },
-
-    toggleEditable: () => {
-        return { expandedTodoEditable: !state.expandedTodoEditable };
     }
+
+    return Object.assign({}, expandedTodo, {
+        [fieldName]: value,
+        tasks
+    });
 };
 
-function transitionState(name, data) {
-    const stateDiff = transforms[name](data);
+function setExpandedTodo({ todo }) {
+    return todo;
+};
 
-    state = Object.assign({}, state, stateDiff);
+function addTodo({ id }) {
+    return { id };
+};
 
-    if (transitionCompleteHandler)
-        transitionCompleteHandler(state);
+function expandedTodo(state = null, action) {
+    if (action.type === 'taskChange')
+        return taskChange(state, action);
+
+    if (action.type === 'todoChange')
+        return todoChange(state, action);
+
+    if (action.type === 'setExpandedTodo')
+        return setExpandedTodo(action);
+
+    if (action.type === 'addTodo')
+        return addTodo(action);
 
     return state;
 };
 
-function onStateTransition(handler) {
-    transitionCompleteHandler = handler;
+function expandedTodoEditable(state = false, action) {
+    if (action.type === 'setExpandedTodo')
+        return false;
+
+    if (action.type === 'addTodo')
+        return true;
+
+    if (action.type === 'saveExpandedTodo')
+        return false;
+
+    if (action.type === 'toggleEditable')
+        return !state;
+
+    return state;
 };
+
+const reducers = {
+    todoList,
+    visibilityFilter,
+    expandedTodo,
+    expandedTodoEditable
+};
+
+const reducer = combineReducers(reducers);
+const store = createStore(reducer);
 
 function setContextItem(key, value) {
     context[key] = value;
@@ -117,4 +122,4 @@ function getContextItem(key) {
     return context[key];
 };
 
-export { transitionState, getState, onStateTransition, setContextItem, getContextItem };
+export { store, setContextItem, getContextItem };

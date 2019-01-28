@@ -9,7 +9,7 @@ import './AppContainer.scss';
 import Sidebar from '../Sidebar';
 import Content from '../Content';
 import { generateID } from '../../utils';
-import { transitionState, getState, onStateTransition } from '../../state/store';
+import { transitionState, getState, onStateTransition, setContextItem } from '../../state/store';
 
 class App extends Component {
     constructor(props) {
@@ -18,8 +18,20 @@ class App extends Component {
         this.state = getState();
 
         onStateTransition((newState) => {
+            this.updateStateContextItems(newState);
             this.setState(newState);
         });
+
+        setContextItem('addTodo', this.addTodo);
+        setContextItem('saveTodo', this.saveTodo);
+        setContextItem('toggleEditable', this.toggleEditable);
+        setContextItem('setVisibilityFilter', this.setVisibilityFilter);
+        this.updateStateContextItems();
+    }
+
+    updateStateContextItems(state = this.state) {
+        setContextItem('visibilityFilter', state.visibilityFilter);
+        setContextItem('expandedTodoEditable', state.expandedTodoEditable);
     }
 
     addTodo = () => {

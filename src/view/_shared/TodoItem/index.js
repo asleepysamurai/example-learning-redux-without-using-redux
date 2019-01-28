@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 
 import CheckableItem from '../CheckableItem';
 import { generateID } from '../../../utils';
-import { transitionState } from '../../../state/store';
+import { transitionState, getContextItem } from '../../../state/store';
 
 class TodoItem extends Component {
     static get defaultProps() {
@@ -27,7 +27,9 @@ class TodoItem extends Component {
         if (!this.props.showTasks)
             return;
 
-        const tasks = this.props.editable ? this.props.tasks.concat([{
+        const editable = getContextItem('expandedTodoEditable');
+
+        const tasks = editable ? this.props.tasks.concat([{
             id: generateID()
         }]) : this.props.tasks;
 
@@ -38,9 +40,9 @@ class TodoItem extends Component {
                     onChange={this.onTaskChange.bind(null, taskItem.id)}
                     className="task-item"
                     checked={taskItem.done}
-                    checkable={!this.props.editable}
+                    checkable={!editable}
                     description={taskItem.description}
-                    readOnly={taskItem.readOnly || !this.props.editable} />
+                    readOnly={taskItem.readOnly || !editable} />
             );
         });
 
@@ -62,7 +64,7 @@ class TodoItem extends Component {
 
         return (
             <button
-                onClick={this.props.onSave}>
+                onClick={getContextItem('saveTodo')}>
                 Save
             </button>
         );
@@ -74,8 +76,8 @@ class TodoItem extends Component {
 
         return (
             <button
-                onClick={this.props.toggleEditable}>
-                {this.props.editable ? 'Reset' : 'Edit'}
+                onClick={getContextItem('toggleEditable')}>
+                {getContextItem('expandedTodoEditable') ? 'Reset' : 'Edit'}
             </button>
         );
     }
@@ -95,7 +97,7 @@ class TodoItem extends Component {
                     checked={this.props.done}
                     checkable={!this.props.readOnly}
                     description={this.props.description}
-                    readOnly={this.props.readOnly || !this.props.editable} />
+                    readOnly={this.props.readOnly || !getContextItem('expandedTodoEditable')} />
                 {taskItems}
                 {editButton}
                 {saveButton}

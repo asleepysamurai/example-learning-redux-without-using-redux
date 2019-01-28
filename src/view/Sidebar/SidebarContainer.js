@@ -46,13 +46,10 @@ class SidebarContainer extends Component {
 
         const component = (
             <Sidebar
-                addTodo={this.props.addTodo}
                 todoList={todoList}
                 completedTodoList={completedTodoList}
                 partlyCompletedTodoList={partlyCompletedTodoList}
-                notStartedTodoList={notStartedTodoList}
-                setVisibilityFilter={this.props.setVisibilityFilter}
-                visibilityFilter={this.props.visibilityFilter} />
+                notStartedTodoList={notStartedTodoList} />
         );
 
         return component;

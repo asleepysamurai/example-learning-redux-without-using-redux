@@ -9,6 +9,8 @@ let state = {
     expandedTodoEditable: false
 };
 
+let context = {};
+
 let transitionCompleteHandler;
 
 function getState() {
@@ -107,4 +109,12 @@ function onStateTransition(handler) {
     transitionCompleteHandler = handler;
 };
 
-export { transitionState, getState, onStateTransition };
+function setContextItem(key, value) {
+    context[key] = value;
+};
+
+function getContextItem(key) {
+    return context[key];
+};
+
+export { transitionState, getState, onStateTransition, setContextItem, getContextItem };

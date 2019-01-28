@@ -12,11 +12,8 @@ class Content extends Component {
             <div
                 className="content-container">
                 <TodoItem
-                    onSave={this.props.saveTodo}
                     {...this.props.todo}
-                    showTasks={true}
-                    editable={this.props.editable}
-                    toggleEditable={this.props.toggleEditable} />
+                    showTasks={true} />
             </div>
         );
 

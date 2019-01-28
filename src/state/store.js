@@ -114,6 +114,22 @@ const reducers = {
 const reducer = combineReducers(reducers);
 const store = createStore(reducer);
 
+const actionCreators = {
+    addTodo: (id) => ({ type: 'addTodo', id }),
+
+    saveExpandedTodo: (expandedTodo) => ({ type: 'saveExpandedTodo', expandedTodo }),
+
+    setVisibilityFilter: (visibilityFilter) => ({ type: 'setVisibilityFilter', visibilityFilter }),
+
+    toggleEditable: () => ({ type: 'toggleEditable' }),
+
+    setExpandedTodo: (todo) => ({ type: 'setExpandedTodo', todo }),
+
+    todoChange: (fieldName, value) => ({ type: 'todoChange', fieldName, value }),
+
+    taskChange: (taskId, fieldName, value) => ({ type: 'taskChange', taskId, fieldName, value })
+};
+
 function setContextItem(key, value) {
     context[key] = value;
 };
@@ -122,4 +138,4 @@ function getContextItem(key) {
     return context[key];
 };
 
-export { store, setContextItem, getContextItem };
+export { store, actionCreators, setContextItem, getContextItem };

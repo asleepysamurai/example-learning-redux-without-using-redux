@@ -9,7 +9,7 @@ import './AppContainer.scss';
 import Sidebar from '../Sidebar';
 import Content from '../Content';
 import { generateID } from '../../utils';
-import { store, setContextItem } from '../../state/store';
+import { store, actionCreators, setContextItem } from '../../state/store';
 
 class App extends Component {
     constructor(props) {
@@ -37,19 +37,19 @@ class App extends Component {
     }
 
     addTodo = () => {
-        store.dispatch({ type: 'addTodo', id: generateID() });
+        store.dispatch(actionCreators.addTodo(generateID()));
     }
 
     saveTodo = () => {
-        store.dispatch({ type: 'saveExpandedTodo', expandedTodo: this.state.expandedTodo });
+        store.dispatch(actionCreators.saveExpandedTodo(this.state.expandedTodo));
     }
 
     setVisibilityFilter = (visibilityFilter) => {
-        store.dispatch({ type: 'setVisibilityFilter', visibilityFilter });
+        store.dispatch(actionCreators.setVisibilityFilter(visibilityFilter));
     }
 
     toggleEditable = () => {
-        store.dispatch({ type: 'toggleEditable' });
+        store.dispatch(actionCreators.toggleEditable());
     }
 
     renderExpandedTodo() {

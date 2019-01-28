@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 
 import CheckableItem from '../CheckableItem';
 import { generateID } from '../../../utils';
-import { store, getContextItem } from '../../../state/store';
+import { store, actionCreators, getContextItem } from '../../../state/store';
 
 class TodoItem extends Component {
     static get defaultProps() {
@@ -16,11 +16,11 @@ class TodoItem extends Component {
     }
 
     onTaskChange = (taskId, fieldName, value) => {
-        store.dispatch({ type: 'taskChange', taskId, fieldName, value });
+        store.dispatch(actionCreators.taskChange(taskId, fieldName, value));
     }
 
     onTodoChange = (fieldName, value) => {
-        store.dispatch({ type: 'todoChange', fieldName, value });
+        store.dispatch(actionCreators.todoChange(fieldName, value));
     }
 
     renderTaskItems() {

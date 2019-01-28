@@ -3,10 +3,11 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import CheckableItem from '../CheckableItem';
 import { generateID } from '../../../utils';
-import { store, actionCreators, getContextItem } from '../../../state/store';
+import { actionCreators } from '../../../state/store';
 
 class TodoItem extends Component {
     static get defaultProps() {
@@ -16,18 +17,25 @@ class TodoItem extends Component {
     }
 
     onTaskChange = (taskId, fieldName, value) => {
-        store.dispatch(actionCreators.taskChange(taskId, fieldName, value));
+        this.props.taskChange(taskId, fieldName, value);
     }
 
     onTodoChange = (fieldName, value) => {
-        store.dispatch(actionCreators.todoChange(fieldName, value));
+        this.props.todoChange(fieldName, value);
+    }
+
+    saveTodo = () => {
+        const { id, description, tasks, done } = this.props;
+        const todo = { id, description, tasks, done };
+
+        this.props.saveExpandedTodo(todo);
     }
 
     renderTaskItems() {
         if (!this.props.showTasks)
             return;
 
-        const editable = getContextItem('expandedTodoEditable');
+        const editable = this.props.expandedTodoEditable;
 
         const tasks = editable ? this.props.tasks.concat([{
             id: generateID()
@@ -64,7 +72,7 @@ class TodoItem extends Component {
 
         return (
             <button
-                onClick={getContextItem('saveTodo')}>
+                onClick={this.saveTodo}>
                 Save
             </button>
         );
@@ -76,8 +84,8 @@ class TodoItem extends Component {
 
         return (
             <button
-                onClick={getContextItem('toggleEditable')}>
-                {getContextItem('expandedTodoEditable') ? 'Reset' : 'Edit'}
+                onClick={this.props.toggleEditable}>
+                {this.props.expandedTodoEditable ? 'Reset' : 'Edit'}
             </button>
         );
     }
@@ -97,7 +105,7 @@ class TodoItem extends Component {
                     checked={this.props.done}
                     checkable={!this.props.readOnly}
                     description={this.props.description}
-                    readOnly={this.props.readOnly || !getContextItem('expandedTodoEditable')} />
+                    readOnly={this.props.readOnly || !this.props.expandedTodoEditable} />
                 {taskItems}
                 {editButton}
                 {saveButton}
@@ -108,4 +116,9 @@ class TodoItem extends Component {
     }
 };
 
-export default TodoItem;
+const { taskChange, todoChange, saveExpandedTodo, toggleEditable } = actionCreators;
+const mapDispatchToProps = { taskChange, todoChange, saveExpandedTodo, toggleEditable };
+
+const mapStateToProps = (state) => ({ expandedTodoEditable: state.expandedTodoEditable });
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoItem);

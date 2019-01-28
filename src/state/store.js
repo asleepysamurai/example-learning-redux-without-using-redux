@@ -4,8 +4,6 @@
 
 import { createStore, combineReducers } from 'redux';
 
-let context = {};
-
 function todoList(state = [], action) {
     if (action.type !== 'saveExpandedTodo')
         return state;
@@ -130,12 +128,4 @@ const actionCreators = {
     taskChange: (taskId, fieldName, value) => ({ type: 'taskChange', taskId, fieldName, value })
 };
 
-function setContextItem(key, value) {
-    context[key] = value;
-};
-
-function getContextItem(key) {
-    return context[key];
-};
-
-export { store, actionCreators, setContextItem, getContextItem };
+export { store, actionCreators };

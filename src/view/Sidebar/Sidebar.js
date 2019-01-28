@@ -3,10 +3,12 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import './Sidebar.scss';
 import TodoList from '../_shared/TodoList';
-import { getContextItem } from '../../state/store';
+import { generateID } from '../../utils';
+import { actionCreators } from '../../state/store';
 
 const headerPrefixByVisibilityFilter = {
     all: 'All',
@@ -16,13 +18,17 @@ const headerPrefixByVisibilityFilter = {
 };
 
 class Sidebar extends Component {
+    addTodo = () => {
+        this.props.addTodo(generateID());
+    }
+
     renderHeader() {
         const component = (
             <div
                 className="header">
-                <span>{headerPrefixByVisibilityFilter[getContextItem('visibilityFilter')]} Todos </span>
+                <span>{headerPrefixByVisibilityFilter[this.props.visibilityFilter]} Todos </span>
                 <button
-                    onClick={getContextItem('addTodo')}>
+                    onClick={this.addTodo}>
                     Add Todo
                 </button>
             </div>
@@ -32,7 +38,7 @@ class Sidebar extends Component {
     }
 
     renderFooter() {
-        const setVisibilityFilter = getContextItem('setVisibilityFilter');
+        const setVisibilityFilter = this.props.setVisibilityFilter;
 
         const component = (
             <div
@@ -62,7 +68,7 @@ class Sidebar extends Component {
 
     renderTodoList() {
         let todoListItems;
-        const visibilityFilter = getContextItem('visibilityFilter');
+        const visibilityFilter = this.props.visibilityFilter;
 
         if (visibilityFilter === 'all')
             todoListItems = this.props.todoList;
@@ -99,4 +105,9 @@ class Sidebar extends Component {
     }
 };
 
-export default Sidebar;
+const { addTodo, setVisibilityFilter } = actionCreators;
+const mapDispatchToProps = { addTodo, setVisibilityFilter };
+
+const mapStateToProps = (state) => ({ visibilityFilter: state.visibilityFilter });
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

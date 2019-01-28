@@ -3,13 +3,14 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import TodoItem from '../TodoItem';
-import { store, actionCreators } from '../../../state/store';
+import { actionCreators } from '../../../state/store';
 
 class TodoList extends Component {
     openTodo = (todo) => {
-        store.dispatch(actionCreators.setExpandedTodo(todo));
+        this.props.setExpandedTodo(todo);
     }
 
     renderTodoListChildren() {
@@ -51,4 +52,7 @@ class TodoList extends Component {
     }
 };
 
-export default TodoList;
+const { setExpandedTodo } = actionCreators;
+const mapDispatchToProps = { setExpandedTodo };
+
+export default connect(null, mapDispatchToProps)(TodoList);
